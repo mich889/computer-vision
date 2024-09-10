@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Colorizing the Prokudin-Gorskii Collection</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      div {
+        padding-bottom: 8px;
+      }
+      .caption {
+        text-align: center;
+        font-style: italic;
+        color: grey;
+      }
+      h3 {
+        font-style: italic;
+        color: palevioletred;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#"
+          >Colorizing the Prokudin-Gorskii Collection</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#Intro">Introduction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Methods">Methodology</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#B&W">Bells & Whistles</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Results">Results</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+        </div> -->
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <p></p>
+                <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+            </div>
+            <div class="col-sm-1"></div>
+        </div> -->
+
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <h3 class="text-center"></h3>
+        <img
+          src="header2.jpg"
+          class="mx-auto d-block"
+          style="width: 100%; height: 200px; object-fit: cover"
+        />
+        <p class="text-center"></p>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="Intro">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Introduction</h3>
+          <p>
+            Sergei Mikhailovich Prokudin-Gorskii (1863-1944) was a visionary far
+            ahead of his time. As early as 1907, he was convinced that color
+            photography was the future, earning special permission from the Tsar
+            to travel throughout the Russian Empire and capture it in
+            color—resulting in the only color portrait of Leo Tolstoy.
+            Prokudin-Gorskii photographed everything: people, architecture,
+            landscapes, railways, bridges—thousands of images. His method
+            involved recording three exposures of each scene on a glass plate
+            using red, green, and blue filters. Even though color printing
+            wasn't yet possible, he dreamed of "multimedia" classrooms across
+            Russia, where students could learn about their vast country through
+            projected color images. Unfortunately, his vision never came to
+            fruition, as he left Russia in 1918, after the revolution, never to
+            return. Fortunately, his RGB glass plate negatives, capturing the
+            final years of the Russian Empire, survived and were acquired by the
+            Library of Congress in 1948. Recently, the Library digitized these
+            negatives and made them available online.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="Methods">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-11">
+          <h3>Methodology</h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-7">
+          <h5>Naive Search</h5>
+          <p>
+            I initally implemented a naive search algorithm that exhaustively
+            searched over a window of possible displacements among the red and
+            green frames to place ontop of the blue frame. The search algorithm
+            calculated the loss function between two frames among a [-15, 15]
+            pixel search range (as recommended by the project spec).
+          </p>
+          <p>
+            On the right, you can see the original images from the
+            Prokudin-Gorskii Collection. I split the image up into three
+            components corresponding and attempted to use the following two loss
+            functions to align the frames. I also implemented a 10% border crop
+            to get rid of the borders and optimize the alignment. Below are the
+            two loss functions I used and the resulting output
+          </p>
+          <h6 style="font-style: italic; color: lightseagreen">
+            L2 Loss (Mean Squared Error):
+          </h6>
+          <p>
+            $$L2\_Loss(\vec{y}, \hat{\vec{y}}) = \frac{1}{N} \sum_{i=1}^{N}
+            (\vec{y}_i - \hat{\vec{y}}_i)^2$$
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-7">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (1, -1)</span>
+                <span style="color: red">Red shift: (7, -1)</span>
+              </p>
+              <img
+                src="cathedral_l2.jpg"
+                class="img-fluid"
+                style="width: 80%"
+              />
+            </div>
+          </div>
+          <h6 style="font-style: italic; color: lightseagreen">
+            NCC (Normalized Cross Correlation):
+          </h6>
+          <p>
+            $$NCC(\vec{x}, \vec{y}) = \langle\frac{\vec{x}}{||\vec{x}||},
+            \frac{\vec{y}}{||\vec{y}||}\rangle$$
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-7">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (-15, 14) </span>
+                <span style="color: red">Red shift: (-15, 13)</span>
+              </p>
+              <img
+                src="cathedral_ncc.jpg"
+                class="img-fluid"
+                style="width: 80%"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <img
+            src="data/cathedral.jpg"
+            class="mx-auto d-block"
+            style="width: 100%"
+          />
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <p>
+            I also tried to crop the border and normalize the image for better
+            alignment. I implemented a 10% border crop so that the loss would
+            more accurately detect the image itself and normalized the input
+            values in the shift calculation. This was the result:
+          </p>
+
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-5">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (5, 2) </span>
+                <span style="color: red">Red shift: (12, 3)</span>
+              </p>
+              <img
+                src="cathedral_modified_l2.jpg"
+                class="img-fluid"
+                style="width: 80%"
+              />
+            </div>
+          </div>
+
+          This seems to result in a better output than before (with using L2
+          loss). So lets apply that to the rest of the images!
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (-3, 2) </span>
+                  <span style="color: red">Red shift: (3, 2)</span>
+                </p>
+                <img
+                  src="monastery.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (3, 3) </span>
+                  <span style="color: red">Red shift: (6, 3)</span>
+                </p>
+                <img src="tobolsk.jpg" class="img-fluid" style="width: 100%" />
+              </div>
+            </div>
+          </div>
+          <p></p>
+          <p>
+            But how about higher resolution images? Can we find a solution with
+            a better runtime?
+          </p>
+          <h3>Pyramid Search</h3>
+          <div class="col-sm-1"></div>
+
+          <div class="col-sm-10 justify-content-center">
+            <img src="pyramid.png" class="mx-auto d-block" style="width: 70%" />
+          </div>
+          <div class="col-sm-1"></div>
+          <p>
+            The exhaustive search worked well on images of around 400 pixels by
+            400 pixels (which was the smaller jpg files). However, since many of
+            the images are of a much higher resolution including thousands of
+            pixels. This was the case for all the .tif file formats. Since the
+            search space had become too large, looking through all 15x15 search
+            spaces led to lengthy computation time. To combat this, I decided to
+            use an
+            <a
+              href="https://en.wikipedia.org/wiki/Pyramid_(image_processing)"
+              target="_blank"
+              style="text-decoration: none"
+              ><font color="lightseagreen">image pyramid</font></a
+            >.
+          </p>
+          <p>
+            By downscaling a high-resolution image to a lower resolution, the
+            search space is significantly reduced, increasing computational
+            efficiency. Building on this idea, my algorithm recursively halves
+            the image size and conducts a basic search then scales the image
+            back to its original resolution through recursive steps, refining
+            the search with a smaller range at each level to maintain
+            efficiency. This method enables the algorithm to fine-tune the
+            displacement vector at each stage, avoiding an exhaustive search at
+            the highest resolution.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <img
+            src="modifications/pyramid.jpg"
+            class="mx-auto d-block"
+            style="width: 70%"
+          />
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="B&W">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Bells & Whistles</h3>
+          <p>
+            To improve my outputs, I tried implementing automatic edge detection
+            as well as a sobel edge detection loss function.
+          </p>
+          <p>
+            In order to do this, two 3x3 convolutional filters are used to
+            estimate the gradients (derivatives) of the change in pixel
+            intensities. Edges in a image are areas where this change is
+            significant, such as the boundary between two distinct regions
+            (e.g., a sharp transition from a dark area to a bright area). Sobel
+            edge detection uses two 3x3 convolutional kernels (filters) to
+            estimate these gradients that finds the changes in the horizontal
+            (X) and vertical (Y) directions.
+          </p>
+          <p>
+            $$X = \begin{bmatrix} 1 & 0 & -1\\ 2 & 0 & -2\\ 1 & 0 & -1
+            \end{bmatrix}\ \ \ \ \ Y = \begin{bmatrix} 1 & 2 & 1\\ 0 & 0 & 0\\
+            -1 & -2 & -1 \end{bmatrix}$$
+          </p>
+          <p>This is what the red, green and blue edges look like for Emir:</p>
+          <div class="row">
+            <div class="col-sm-4">
+              <p class="text-center">Red Channel</p>
+              <img
+                src="sobel_edges_r.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
+            <div class="col-sm-4">
+              <p class="text-center">Green Channel</p>
+              <img
+                src="sobel_edges_g.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
+            <div class="col-sm-4">
+              <p class="text-center">Blue Channel</p>
+              <img
+                src="sobel_edges_b.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
+          </div>
+          <p></p>
+          <p>
+            Using the sobel edge detection, I was able to both automaitcally
+            calculate the borders (instead of the naive 10%) as well as use it
+            as a loss function that comprares the edges of two images. This is
+            especially useful in the Emir image where we can see that there is
+            misalignment in the edges of the photo. Using edge detection and
+            automatic cropping, I was able to improve the results:
+          </p>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <p class="text-center">Before</p>
+              <img
+                src="modifications/sobel.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
+            <div class="col-sm-6">
+              <p class="text-center">After</p>
+              <img
+                src="output/emir_2.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
+          </div>
+
+          <div class="row" id="Results">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h3>Results</h3>
+            </div>
+            <div class="col-sm-1"></div>
+          </div>
+
+          <div class="container">
+            <!-- Row 1: Three Images -->
+            <div class="row">
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (49, 24) </span>
+                  <span style="color: red">Red shift: (103, 55)</span>
+                </p>
+                <img
+                  src="output/emir_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">emir.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (-3, 2) </span>
+                  <span style="color: red">Red shift: (3, 2)</span>
+                </p>
+                <img
+                  src="output/monastery_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">monastery.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (25, 4) </span>
+                  <span style="color: red">Red shift: (58, -4)</span>
+                </p>
+                <img
+                  src="output/cathedral_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">church.jpg</div>
+              </div>
+            </div>
+            <!-- Row 2: Three Images -->
+            <div class="row">
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (53, 14) </span>
+                  <span style="color: red">Red shift: (112, 11)</span>
+                </p>
+                <img
+                  src="output/three_generations_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">three_generations.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (80, 10) </span>
+                  <span style="color: red">Red shift: (176, 12)</span>
+                </p>
+                <img
+                  src="output/melons_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">melons.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (51, 26) </span>
+                  <span style="color: red">Red shift: (108, 36)</span>
+                </p>
+                <img
+                  src="output/onion_church_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">onion_church.jpg</div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                  >
+                    <span style="color: green">Green shift: (42, 5) </span>
+                    <span style="color: red">Red shift: (87, 32)</span>
+                  </p>
+                  <img
+                    src="output/train_2.jpg"
+                    class="mx-auto d-block"
+                    style="width: 100%"
+                  />
+                  <div class="caption center-block">train.jpg</div>
+                </div>
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                  >
+                    <span style="color: green">Green shift: (5, 2) </span>
+                    <span style="color: red">Red shift: (12, 3)</span>
+                  </p>
+                  <img
+                    src="output/cathedral_2.jpg"
+                    class="mx-auto d-block"
+                    style="width: 100%"
+                  />
+                  <div class="caption center-block">cathedral.jpg</div>
+                </div>
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                  >
+                    <span style="color: green">Green shift: (3, 3) </span>
+                    <span style="color: red">Red shift: (6, 3)</span>
+                  </p>
+                  <img
+                    src="output/tobolsk_2.jpg"
+                    class="mx-auto d-block"
+                    style="width: 100%"
+                  />
+                  <div class="caption center-block">tobolsk.jpg</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (41, 17) </span>
+                  <span style="color: red">Red shift: (89, 23)</span>
+                </p>
+                <img
+                  src="output/icon_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">icon.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (80, 30) </span>
+                  <span style="color: red">Red shift: (175, 37)</span>
+                </p>
+                <img
+                  src="output/self_portrait_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">self_portrait.jpg</div>
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
+                >
+                  <span style="color: green">Green shift: (59, 16) </span>
+                  <span style="color: red">Red shift: (124, 13)</span>
+                </p>
+                <img
+                  src="output/harvesters_2.jpg"
+                  class="mx-auto d-block"
+                  style="width: 100%"
+                />
+                <div class="caption center-block">harvesters.jpg</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (33, -11) </span>
+                <span style="color: red">Red shift: (140, -27)</span>
+              </p>
+              <img
+                src="output/sculpture_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">sculpture.jpg</div>
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (51, 9) </span>
+                <span style="color: red">Red shift: (112, 11)</span>
+              </p>
+              <img
+                src="output/lady_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">lady.jpg</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
