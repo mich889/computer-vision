@@ -319,6 +319,7 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
           <h3>Bells & Whistles</h3>
+          <h5>Edge detection</h5>
           <p>
             To improve my outputs, I tried implementing automatic edge detection
             as well as a sobel edge detection loss function.
@@ -392,205 +393,185 @@
                 style="width: 70%"
               />
             </div>
-          </div>
-
-          <div class="row" id="Results">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-10">
-              <h3>Results</h3>
+            <h5>White balancing</h5>
+            <p>
+              To further enhance the images, I tried implementing white
+              balancing. In my implementation, I used the Gray World Assumption
+              technique, which assumes that the average color of an image should
+              be a neutral gray. The function works by first splitting the image
+              into its red, green, and blue channels. Then, it calculates the
+              average intensity for each channel and the overall average across
+              all channels.
+            </p>
+            <div class="row"></div>
+            <div class="col-sm-6">
+              <p class="text-center">Before</p>
+              <img
+                src="output/lady_2.jpg"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
             </div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-6">
+              <p class="text-center">After</p>
+              <img
+                src="wb.png"
+                class="mx-auto d-block"
+                style="width: 70%"
+              />
+            </div>
           </div>
+        </div>
 
-          <div class="container">
-            <!-- Row 1: Three Images -->
+        <div class="row" id="Results">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h3>Results</h3>
+          </div>
+          <div class="col-sm-1"></div>
+        </div>
+
+        <div class="container">
+          <!-- Row 1: Three Images -->
+          <div class="row">
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (49, 24) </span>
+                <span style="color: red">Red shift: (103, 55)</span>
+              </p>
+              <img
+                src="output/emir_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">emir.jpg</div>
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (-3, 2) </span>
+                <span style="color: red">Red shift: (3, 2)</span>
+              </p>
+              <img
+                src="output/monastery_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">monastery.jpg</div>
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (25, 4) </span>
+                <span style="color: red">Red shift: (58, -4)</span>
+              </p>
+              <img
+                src="output/cathedral_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">church.jpg</div>
+            </div>
+          </div>
+          <!-- Row 2: Three Images -->
+          <div class="row">
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (53, 14) </span>
+                <span style="color: red">Red shift: (112, 11)</span>
+              </p>
+              <img
+                src="output/three_generations_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">three_generations.jpg</div>
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (80, 10) </span>
+                <span style="color: red">Red shift: (176, 12)</span>
+              </p>
+              <img
+                src="output/melons_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">melons.jpg</div>
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (51, 26) </span>
+                <span style="color: red">Red shift: (108, 36)</span>
+              </p>
+              <img
+                src="output/onion_church_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">onion_church.jpg</div>
+            </div>
             <div class="row">
               <div class="col-sm-4">
                 <p
                   class="text-center"
                   style="margin-top: 10px; color: grey; font-size: 0.875rem"
                 >
-                  <span style="color: green">Green shift: (49, 24) </span>
-                  <span style="color: red">Red shift: (103, 55)</span>
+                  <span style="color: green">Green shift: (42, 5) </span>
+                  <span style="color: red">Red shift: (87, 32)</span>
                 </p>
                 <img
-                  src="output/emir_2.jpg"
+                  src="output/train_2.jpg"
                   class="mx-auto d-block"
                   style="width: 100%"
                 />
-                <div class="caption center-block">emir.jpg</div>
+                <div class="caption center-block">train.jpg</div>
               </div>
               <div class="col-sm-4">
                 <p
                   class="text-center"
                   style="margin-top: 10px; color: grey; font-size: 0.875rem"
                 >
-                  <span style="color: green">Green shift: (-3, 2) </span>
-                  <span style="color: red">Red shift: (3, 2)</span>
-                </p>
-                <img
-                  src="output/monastery_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">monastery.jpg</div>
-              </div>
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (25, 4) </span>
-                  <span style="color: red">Red shift: (58, -4)</span>
+                  <span style="color: green">Green shift: (5, 2) </span>
+                  <span style="color: red">Red shift: (12, 3)</span>
                 </p>
                 <img
                   src="output/cathedral_2.jpg"
                   class="mx-auto d-block"
                   style="width: 100%"
                 />
-                <div class="caption center-block">church.jpg</div>
-              </div>
-            </div>
-            <!-- Row 2: Three Images -->
-            <div class="row">
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (53, 14) </span>
-                  <span style="color: red">Red shift: (112, 11)</span>
-                </p>
-                <img
-                  src="output/three_generations_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">three_generations.jpg</div>
+                <div class="caption center-block">cathedral.jpg</div>
               </div>
               <div class="col-sm-4">
                 <p
                   class="text-center"
                   style="margin-top: 10px; color: grey; font-size: 0.875rem"
                 >
-                  <span style="color: green">Green shift: (80, 10) </span>
-                  <span style="color: red">Red shift: (176, 12)</span>
+                  <span style="color: green">Green shift: (3, 3) </span>
+                  <span style="color: red">Red shift: (6, 3)</span>
                 </p>
                 <img
-                  src="output/melons_2.jpg"
+                  src="output/tobolsk_2.jpg"
                   class="mx-auto d-block"
                   style="width: 100%"
                 />
-                <div class="caption center-block">melons.jpg</div>
-              </div>
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (51, 26) </span>
-                  <span style="color: red">Red shift: (108, 36)</span>
-                </p>
-                <img
-                  src="output/onion_church_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">onion_church.jpg</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <p
-                    class="text-center"
-                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                  >
-                    <span style="color: green">Green shift: (42, 5) </span>
-                    <span style="color: red">Red shift: (87, 32)</span>
-                  </p>
-                  <img
-                    src="output/train_2.jpg"
-                    class="mx-auto d-block"
-                    style="width: 100%"
-                  />
-                  <div class="caption center-block">train.jpg</div>
-                </div>
-                <div class="col-sm-4">
-                  <p
-                    class="text-center"
-                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                  >
-                    <span style="color: green">Green shift: (5, 2) </span>
-                    <span style="color: red">Red shift: (12, 3)</span>
-                  </p>
-                  <img
-                    src="output/cathedral_2.jpg"
-                    class="mx-auto d-block"
-                    style="width: 100%"
-                  />
-                  <div class="caption center-block">cathedral.jpg</div>
-                </div>
-                <div class="col-sm-4">
-                  <p
-                    class="text-center"
-                    style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                  >
-                    <span style="color: green">Green shift: (3, 3) </span>
-                    <span style="color: red">Red shift: (6, 3)</span>
-                  </p>
-                  <img
-                    src="output/tobolsk_2.jpg"
-                    class="mx-auto d-block"
-                    style="width: 100%"
-                  />
-                  <div class="caption center-block">tobolsk.jpg</div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (41, 17) </span>
-                  <span style="color: red">Red shift: (89, 23)</span>
-                </p>
-                <img
-                  src="output/icon_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">icon.jpg</div>
-              </div>
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (80, 30) </span>
-                  <span style="color: red">Red shift: (175, 37)</span>
-                </p>
-                <img
-                  src="output/self_portrait_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">self_portrait.jpg</div>
-              </div>
-              <div class="col-sm-4">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; color: grey; font-size: 0.875rem"
-                >
-                  <span style="color: green">Green shift: (59, 16) </span>
-                  <span style="color: red">Red shift: (124, 13)</span>
-                </p>
-                <img
-                  src="output/harvesters_2.jpg"
-                  class="mx-auto d-block"
-                  style="width: 100%"
-                />
-                <div class="caption center-block">harvesters.jpg</div>
+                <div class="caption center-block">tobolsk.jpg</div>
               </div>
             </div>
           </div>
@@ -600,31 +581,78 @@
                 class="text-center"
                 style="margin-top: 10px; color: grey; font-size: 0.875rem"
               >
-                <span style="color: green">Green shift: (33, -11) </span>
-                <span style="color: red">Red shift: (140, -27)</span>
+                <span style="color: green">Green shift: (41, 17) </span>
+                <span style="color: red">Red shift: (89, 23)</span>
               </p>
               <img
-                src="output/sculpture_2.jpg"
+                src="output/icon_2.jpg"
                 class="mx-auto d-block"
                 style="width: 100%"
               />
-              <div class="caption center-block">sculpture.jpg</div>
+              <div class="caption center-block">icon.jpg</div>
             </div>
             <div class="col-sm-4">
               <p
                 class="text-center"
                 style="margin-top: 10px; color: grey; font-size: 0.875rem"
               >
-                <span style="color: green">Green shift: (51, 9) </span>
-                <span style="color: red">Red shift: (112, 11)</span>
+                <span style="color: green">Green shift: (80, 30) </span>
+                <span style="color: red">Red shift: (175, 37)</span>
               </p>
               <img
-                src="output/lady_2.jpg"
+                src="output/self_portrait_2.jpg"
                 class="mx-auto d-block"
                 style="width: 100%"
               />
-              <div class="caption center-block">lady.jpg</div>
+              <div class="caption center-block">self_portrait.jpg</div>
             </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; color: grey; font-size: 0.875rem"
+              >
+                <span style="color: green">Green shift: (59, 16) </span>
+                <span style="color: red">Red shift: (124, 13)</span>
+              </p>
+              <img
+                src="output/harvesters_2.jpg"
+                class="mx-auto d-block"
+                style="width: 100%"
+              />
+              <div class="caption center-block">harvesters.jpg</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <p
+              class="text-center"
+              style="margin-top: 10px; color: grey; font-size: 0.875rem"
+            >
+              <span style="color: green">Green shift: (33, -11) </span>
+              <span style="color: red">Red shift: (140, -27)</span>
+            </p>
+            <img
+              src="output/sculpture_2.jpg"
+              class="mx-auto d-block"
+              style="width: 100%"
+            />
+            <div class="caption center-block">sculpture.jpg</div>
+          </div>
+          <div class="col-sm-4">
+            <p
+              class="text-center"
+              style="margin-top: 10px; color: grey; font-size: 0.875rem"
+            >
+              <span style="color: green">Green shift: (51, 9) </span>
+              <span style="color: red">Red shift: (112, 11)</span>
+            </p>
+            <img
+              src="output/lady_2.jpg"
+              class="mx-auto d-block"
+              style="width: 100%"
+            />
+            <div class="caption center-block">lady.jpg</div>
           </div>
         </div>
       </div>
