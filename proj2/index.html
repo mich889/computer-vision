@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Fun with Filters and Frequencies</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      div {
+        padding-bottom: 8px;
+      }
+      .caption {
+        text-align: center;
+        font-style: italic;
+        color: grey;
+      }
+      h3 {
+        font-style: italic;
+        color: palevioletred;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#"
+          >Fun with Filters and Frequencies by Michelle Chen</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#Intro">Introduction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Finite Difference Operator"
+                >Finite Difference Operator</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#DoG Filter">DoG Filter</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Image Sharpening">Image Sharpening</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Hybrid Images">Hybrid Images</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Gaussian and Laplacian Stacks"
+                >Gaussian and Laplacian Stacks</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#Multiresolution Blending"
+                >Multiresolution Blending</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+        </div> -->
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <p></p>
+                <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+            </div>
+            <div class="col-sm-1"></div>
+        </div> -->
+
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <h3 class="text-center"></h3>
+        <img
+          src="header.jpg"
+          class="mx-auto d-block"
+          style="width: 100%; height: 200px; object-fit: cover"
+        />
+        <p class="text-center"></p>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="Intro">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Introduction</h3>
+          <p>
+            This project investigates various techniques for utilizing
+            frequencies to process and creatively combine images. For example,
+            sharpening an image can be achieved by filtering and enhancing its
+            high-frequency components. Edges can be detected using finite
+            difference kernels. Hybrid images can be created by merging the
+            high-frequency details of one image with the low-frequency
+            components of another. Additionally, images can be seamlessly
+            blended across different frequency bands using Gaussian and
+            Laplacian pyramids.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="Finite Difference Operator">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-11">
+          <h3>Finite Difference Operator</h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>Methodology</h5>
+          <p>
+            For the two partial derivatives, finite difference kernels were
+            created as Numpy arrays:
+            <code>dx_kernel = np.array([[1, -1]])</code> and
+            <code>dy_kernel = np.array([[1], [-1]])</code>. These kernels were
+            convolved with the original image using scipy.signal.convolve2d to
+            generate the partial derivative images, which were then combined
+            into a single edge image by calculating the gradient magnitude as
+            <code>np.sqrt(dx_deriv ** 2 + dy_deriv ** 2)</code>. The sigma value
+            = 1.
+          </p>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  dX
+                </p>
+                <img
+                  src="partial_x.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  dY
+                </p>
+                <img
+                  src="partial_y.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Combined gradient
+                </p>
+                <img
+                  src="finite_gradient.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Combined binarized
+                </p>
+                <img
+                  src="finite_edge.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="DoG">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h3>Derivative of Gaussian (DoG) Filter</h3>
+            <h5>Blurred Finite Difference</h5>
+            <p>
+              The image is first blurred to minimize convolution artifacts. This
+              method produces thicker, rounder binarized edges and eliminates
+              small noise and fine details, particularly at the bottom of the
+              image and inside the camera.
+            </p>
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  dX
+                </p>
+                <img
+                  src="dog_x.jpg"
+                  class="img-fluid"
+                  alt="Image 1 Description"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  dY
+                </p>
+                <img
+                  src="dog_y.jpg"
+                  class="img-fluid"
+                  alt="Image 2 Description"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Combined Gradient
+                </p>
+                <img
+                  src="dog_magnitude.jpg"
+                  class="img-fluid"
+                  alt="Image 1 Description"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Combined Binarized
+                </p>
+                <img
+                  src="dog_binary.jpg"
+                  class="img-fluid"
+                  alt="Image 2 Description"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row"></div>
+          <div class="col-sm-6">
+            <p class="text-center" style="margin-top: 10px; font-size: 1rem">
+              Blurred Finite Difference
+            </p>
+            <img
+              src="dog_binary.jpg"
+              class="img-fluid"
+              alt="Image 1 Description"
+            />
+          </div>
+          <div class="col-sm-6">
+            <p class="text-center" style="margin-top: 10px; font-size: 1rem">
+              Derivative of Gaussian
+            </p>
+            <img
+              src="dog_binary_2.jpg"
+              class="img-fluid"
+              alt="Image 2 Description"
+            />
+          </div>
+        </div>
+        <div class="row" id="Image Sharpening">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h3>Image Sharpening</h3>
+            <p>
+              To sharpen an image, a Gaussian kernel is applied to filter out
+              high frequencies, creating a blurred version of the original. The
+              high-frequency details are extracted by subtracting the blurred
+              image from the original <code>(details = target - blurred)</code>,
+              effectively removing the lower frequency features. These details
+              are then enhanced in the final image using
+              <code>(result = target + alpha * details</code>, where alpha is a
+              constant that controls the sharpening intensity.
+            </p>
+            <h5>Taj Mahal</h5>
+            <p>alpha = 1</p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    original
+                  </p>
+                  <img src="taj.jpg" class="img-fluid" style="width: 100%" />
+                </div>
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    sharpened
+                  </p>
+                  <img
+                    src="sharpened.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+            <h5>Baby</h5>
+            <p>alpha = 2</p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    original
+                  </p>
+                  <img
+                    src="example2.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    sharpened
+                  </p>
+                  <img
+                    src="sharpened_2.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+                <h5>Re-sharpening a Blurred Image</h5>
+                <p>
+                  The Taj Mahal image was blurred using a gaussian kernel and
+                  then sharpened with an alpha of 1.0. While sharpening
+                  effectively enhances the building's edges and reduces the
+                  "smudged" look, it cannot recover the finer details lost from
+                  the initial blur.
+                </p>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      >
+                        Original
+                      </p>
+                      <img
+                        src="taj.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-6">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      >
+                        High Frequency (high pass filter)
+                      </p>
+                      <img
+                        src="high_freq_taj.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      >
+                        Blurred Image
+                      </p>
+                      <img
+                        src="blurred.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-6">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      >
+                        Resharpened Blurred Image
+                      </p>
+                      <img
+                        src="blurred_resharpened.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="Hybrid Images">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h3>Hybrid Images</h3>
+              <p>
+                Two images, lo_img and hi_img, are processed separately by
+                applying a Gaussian blur to create <code>lo</code> and
+                <code>hi_blurred</code>. The high-frequency details are
+                extracted from hi_img by subtracting hi_blurred, and the final
+                hybrid image is produced by averaging lo and the extracted high
+                frequencies pixel-wise. This used <code>sigma1 = 0.1 </code> and
+                <code> sigma2 = 1</code>.
+              </p>
+              <h5>Failed</h5>
+              <div class="row">
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    Low frequency cat
+                  </p>
+                  <img
+                    src="b.jpg"
+                    class="img-fluid"
+                    alt="Low-Frequency Image"
+                    style="width: 100%"
+                  />
+                </div>
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    High frequency Lion
+                  </p>
+                  <img
+                    src="a.jpg"
+                    class="img-fluid"
+                    alt="High-Frequency Image"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+              <div class="row" style="margin-top: 20px">
+                <div class="col-12">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    Failed combination
+                  </p>
+                  <img
+                    src="hybrid/hybrid1.jpg"
+                    class="img-fluid"
+                    alt="Hybrid Image"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+              <h5>WorldView</h5>
+              <div class="row">
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    Low frequency eye
+                  </p>
+                  <img
+                    src="c.jpg"
+                    class="img-fluid"
+                    alt="Low-Frequency Image"
+                    style="width: 100%"
+                  />
+                </div>
+                <div class="col-sm-6">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    High frequency world/earth
+                  </p>
+                  <img
+                    src="d.jpg"
+                    class="img-fluid"
+                    alt="High-Frequency Image"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+              <div class="row" style="margin-top: 20px">
+                <div class="col-12">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  >
+                    Success!
+                  </p>
+                  <img
+                    src="hybrid/hybrid2.jpg"
+                    class="img-fluid"
+                    alt="Hybrid Image"
+                    style="width: 100%"
+                  />
+                </div>
+                <h5>Fourier Transforms</h5>
+                <p>
+                  For the hybrid image, Fourier transforms were applied to the
+                  original input images, the filtered images lo and hi, and the
+                  final hybrid image, resulting in the following visualizations:
+                </p>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    >
+                      Low frequency FFT
+                    </p>
+                    <img
+                      src="hybrid/Frequency of Image 1.jpg"
+                      class="img-fluid"
+                      alt="Low-Frequency Image"
+                      style="width: 100%"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    >
+                      Filtered Filter 1
+                    </p>
+                    <img
+                      src="hybrid/low-pass.jpg"
+                      class="img-fluid"
+                      alt="High-Frequency Image"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    >
+                      High frequency FFT
+                    </p>
+                    <img
+                      src="hybrid/Frequency of Image 2.jpg"
+                      class="img-fluid"
+                      alt="Low-Frequency Image"
+                      style="width: 100%"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    >
+                      Filtered Filter 1
+                    </p>
+                    <img
+                      src="hybrid/High-pass Image 2.jpg"
+                      class="img-fluid"
+                      alt="High-Frequency Image"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+                <div class="row" style="margin-top: 20px">
+                  <div class="col-12">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    >
+                      Hybrid Image FFT
+                    </p>
+                    <img
+                      src="hybrid/Frequency of Hybrid Image.jpg"
+                      class="img-fluid"
+                      alt="Hybrid Image"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-1"></div>
+          </div>
+        </div>
+        <div class="row" id="Gaussian and Laplacian Stacks"></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Gaussian and Laplacian Stacks</h3>
+          <p>
+            In the Gaussian stack, each level is generated by blurring the
+            previous level with a Gaussian kernel, maintaining the same image
+            size across all levels. The Laplacian stack is then calculated by
+            subtracting consecutive Gaussian levels, with the last level of the
+            Laplacian stack being the last level of the Gaussian stack, ensuring
+            both stacks have the same number of levels.
+          </p>
+          <div class="row" style="margin-top: 20px">
+            <div class="col-12">
+              <img
+                src="laplacian_stacks_plot.png"
+                class="img-fluid"
+                alt="Hybrid Image"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+      <div class="row" id="Multiresolution Blending"></div>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <h3>Multiresolution Blending</h3>
+        <p>
+          Input images are used to create Laplacian stacks. To blend teh images,
+          for each level,
+          <code
+            >res[:,:,:,l] = one[:,:,:,l] * mask_stack[:,:,:,l] + two[:,:,:,l] *
+            (1-mask_stack[:,:,:,l])</code
+          > I attepmted this was the traditional vertical mask for the orapple, as well as a custom mask.
+        </p>
+        <h5>Orapple</h5>
+        <div class="row">
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; font-size: 1rem"
+              >
+                Image 1
+              </p>
+              <img
+                src="apple_g.jpg"
+                class="img-fluid"
+                alt="Low-Frequency Image"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; font-size: 1rem"
+              >
+                Image 2
+              </p>
+              <img
+                src="orange_g.jpg"
+                class="img-fluid"
+                alt="High-Frequency Image"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Mask
+                </p>
+                <img
+                  src="orapple_mask.jpg"
+                  class="img-fluid"
+                  alt="High-Frequency Image"
+                  style="width: 100%"
+                />
+              </div>
+          </div>
+      <div class="row" style="margin-top: 20px">
+        <div class="col-12">
+            <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Result
+                </p>
+          <img
+            src="orapple.jpg"
+            class="img-fluid"
+            alt="Hybrid Image"
+            style="width: 100%"
+          />
+        </div>
+        <h5>Water Licker</h5>
+        <div class="row">
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; font-size: 1rem"
+              >
+                Image 1
+              </p>
+              <img
+                src="cat-modified.jpg"
+                class="img-fluid"
+                alt="Low-Frequency Image"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col-sm-4">
+              <p
+                class="text-center"
+                style="margin-top: 10px; font-size: 1rem"
+              >
+                Image 2
+              </p>
+              <img
+                src="me_og-modified.jpg"
+                class="img-fluid"
+                alt="High-Frequency Image"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Mask
+                </p>
+                <img
+                  src="mask.jpg"
+                  class="img-fluid"
+                  alt="High-Frequency Image"
+                  style="width: 100%"
+                />
+              </div>
+          </div>
+      <div class="row" style="margin-top: 20px">
+        <div class="col-12">
+            <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Result
+                </p>
+          <img
+            src="cat_michelle.jpg"
+            class="img-fluid"
+            alt="Hybrid Image"
+            style="width: 100%"
+          />
+        </div>
+      </div>
+      
+    </div>
+      <div class="col-sm-1"></div>
+    </div>
+  </body>
+</html>
