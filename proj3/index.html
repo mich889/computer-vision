@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Fun with Filters and Frequencies</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      div {
+        padding-bottom: 8px;
+      }
+      .caption {
+        text-align: center;
+        font-style: italic;
+        color: grey;
+      }
+      h3 {
+        font-style: italic;
+        color: palevioletred;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Face Morphing</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#Intro">Introduction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P1">Part 1</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P2">Part 2</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P3">Part 3</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P4">Part 4</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P5">Part 5</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P6">B&W</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+        </div> -->
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <p></p>
+                <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+            </div>
+            <div class="col-sm-1"></div>
+        </div> -->
+
+      <div class="row" id="Intro">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Introduction</h3>
+          <p>
+            In this project, I manually selected correspondences between images
+            and applied Delaunay triangulation, affine transformations, and
+            cross-dissolving techniques to warp faces into the shapes of other
+            faces, as well as to generate morph animations between them.
+            Additionally, I computed the average face of a population and used
+            it to extrapolate and create caricatures.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="P1">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-11">
+          <h3>Part 1: Defining Correspondences</h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>Methodology</h5>
+          <p>
+            First, I cropped and resized an image of myself and my friend
+            Mckenzie to ensure both had the same dimensions, with our faces
+            matching in size and aspect ratio. Using the provided correspondance
+            tool, I selected 58 correspondence points for each image including
+            the four corners to make sure that all triangles were created. Then
+            I generated a Delaunay triangulation based on the average of the two
+            sets of correspondence points.
+          </p>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="images/triangles.png"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="P2">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-11">
+            <h3>Part 2: Computing the Mid-Way Face</h3>
+            <h5>Blurred Finite Difference</h5>
+            <p>
+              To compute the mid-way face between me and Mckenzie, I followed
+              these steps:<br /><br />
+
+              1. Calculated the average shape by taking the midpoint of the
+              corresponding points<br /><br />
+              2. Computed the inverse of the affine transformation matrix for
+              each triangle, mapping the original triangles in both images to
+              the corresponding triangles in the average shape. <br /><br />
+              3. Applied inverse warping using a polygon mask for all the
+              pixels.<br /><br />
+              Then I cross-dissolved the warped images by averaging them
+              together.
+            </p>
+            <div class="row">
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  My original image
+                </p>
+                <img
+                  src="images/img1-1.png"
+                  class="img-fluid"
+                  alt="Image 1 Description"
+                />
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Midway
+                </p>
+                <img
+                  src="images/merge_final.png"
+                  class="img-fluid"
+                  alt="Image 2 Description"
+                />
+              </div>
+              <div class="col-sm-4">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                >
+                  Mckenzie's original image
+                </p>
+                <img
+                  src="images/img2.png"
+                  class="img-fluid"
+                  alt="Image 3 Description"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="P3">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-11">
+              <h3>Part 3: The Morph Sequence</h3>
+              <p>
+                Using Part 2 and varying the weights between 0 and 1, I created
+                a morph sequence consisting of 56 frames.
+              </p>
+              <!-- Replace the video with the embedded YouTube video -->
+              <div class="row">
+                <iframe
+                  width="100%"
+                  height="515"
+                  src="https://www.youtube.com/embed/tE-ZlEGfwS0"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                </div>
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                </div>
+                <div class="col-sm-4">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                  <img
+                    src="white.jpg"
+                    class="img-fluid"
+                    alt="Image 3 Description"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="P4">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-11">
+              <h3>Part 4: The Mean Face of a population</h3>
+              <p>
+                To compute the mean face of a population, I took the FEI
+                database for Brazilian faces and used the images of a straight
+                face to try and find the average face. To find the average face,
+                I followed these steps: <br /><br />
+                1. Calculated the average shape by taking the mean of all
+                corresponding points. <br /><br />
+                2. Warped each face to fit this average shape. <br /><br />
+                3. Compute the mean face by averaging the colors of all the
+                warped faces. <br /><br />
+                Below are examples of faces from the dataset that have been
+                warped to the average shape
+              </p>
+              <div class="row">
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    1: straight face morph
+                  </p>
+                  <img
+                    src="mean_face/output/1a_morphed.jpg"
+                    class="img-fluid"
+                    alt="Image 1 Description"
+                  />
+                </div>
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    5: straight face morph
+                  </p>
+                  <img
+                    src="mean_face/output/5a_morphed.jpg"
+                    class="img-fluid"
+                    alt="Image 2 Description"
+                  />
+                </div>
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    6: straight face morph
+                  </p>
+                  <img
+                    src="mean_face/output/6a_morphed.jpg"
+                    class="img-fluid"
+                    alt="Image 3 Description"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    1: smiling face morph
+                  </p>
+                  <img
+                    src="mean_face/output/1b_morphed_2.jpg"
+                    class="img-fluid"
+                    alt="Image 1 Description"
+                  />
+                </div>
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    5: smiling face morph
+                  </p>
+                  <img
+                    src="mean_face/output/5b_morphed_2.jpg"
+                    class="img-fluid"
+                    alt="Image 2 Description"
+                  />
+                </div>
+                <div class="col-sm-4 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    6: smiling face morph
+                  </p>
+                  <img
+                    src="mean_face/output/6b_morphed_2.jpg"
+                    class="img-fluid"
+                    alt="Image 3 Description"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    Average straight face
+                  </p>
+                  <img
+                    src="average_brazilian_face_rgb.jpg"
+                    class="img-fluid"
+                    alt="Image 1 Description"
+                  />
+                </div>
+                <div class="col-sm-6 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    Average smiling face
+                  </p>
+                  <img
+                    src="average_brazilian_face_rgb_2.jpg"
+                    class="img-fluid"
+                    alt="Image 2 Description"
+                  />
+                </div>
+              </div>
+              <p>
+                Here is my face warped into the average geometry, and the
+                average face warped into my face’s geometry.
+              </p>
+            </div>
+            <div class="row"></div>
+            <div class="col-sm-6 text-center">
+              <p style="margin-top: 10px; font-size: 1rem">My face warped</p>
+              <img src="images/me_danish_4.png" class="img-fluid" />
+            </div>
+            <div class="col-sm-6 text-center">
+              <p style="margin-top: 10px; font-size: 1rem">
+                Average face warped
+              </p>
+              <img src="images/danish_me_3.png" class="img-fluid" />
+            </div>
+          </div>
+          <div class="row" id="P5">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-11">
+              <h3>Part 5: Caricatures & Extrapolating From the Mean</h3>
+              <p>
+                Using the FEI database population means, we can create
+                caricatures by extrapolating facial features. I used
+                <code>p=0.5</code> to create the caricature meaning it is
+                halfway between two sets of facial correspondences
+              </p>
+            </div>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-12">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                  <img
+                    src="caricature1-2.png"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row" id="P6">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-11">
+                <h3>Bells & Whistles</h3>
+                <p>
+                  For my initial enhancements, I transformed my features with
+                  that of an average Chinese male face that I sourced online.
+                  The process began with rescaling and resizing both images to
+                  ensure compatibility, followed by selecting corresponding
+                  points between them. I then explored three distinct morphing
+                  techniques: <br /><br />
+
+                  1. Warp: Matching the structure of the two faces <br />
+                  2. Cross-Dissolve: Matching the appearance of the two faces
+                  <br />
+                  3. Warp and Cross-Dissolve: Matching the structure and
+                  appearance of the two faces <br /><br />
+                </p>
+              </div>
+              <div class="row"></div>
+                <div class="col-sm-6 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    Me
+                  </p>
+                  <img
+                    src="bw/img1_resized.jpg"
+                    class="img-fluid"
+                    alt="Image 1 Description"
+                  />
+                </div>
+                <div class="col-sm-6 text-center">
+                  <p style="margin-top: 10px; font-size: 1rem">
+                    Average chinese male
+                  </p>
+                  <img
+                    src="bw/img2_resized.jpg"
+                    class="img-fluid"
+                    alt="Image 2 Description"
+                  />
+                </div>
+              </div>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-4 text-center">
+                    <p style="margin-top: 10px; font-size: 1rem">
+                      Warp
+                    </p>
+                    <img
+                      src="bw/morph.jpg"
+                      class="img-fluid"
+                      alt="Image 1 Description"
+                    />
+                  </div>
+                  <div class="col-sm-4 text-center">
+                    <p style="margin-top: 10px; font-size: 1rem">
+                      Cross-Dissolve
+                    </p>
+                    <img
+                      src="bw/cross.png"
+                      class="img-fluid"
+                      alt="Image 2 Description"
+                    />
+                  </div>
+                  <div class="col-sm-4 text-center">
+                    <p style="margin-top: 10px; font-size: 1rem">
+                        Warp and Cross-Dissolve
+                    </p>
+                    <img
+                      src="bw/male_me.png"
+                      class="img-fluid"
+                      alt="Image 3 Description"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
