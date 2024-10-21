@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stitching Photo Mosaics</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      div {
+        padding-bottom: 8px;
+      }
+      .caption {
+        text-align: center;
+        font-style: italic;
+        color: grey;
+      }
+      h3 {
+        font-style: italic;
+        color: palevioletred;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Stitching Photo Mosaics</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#Intro">Introduction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P1">Part A</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#P2">Part B</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+        </div> -->
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <p></p>
+                <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+            </div>
+            <div class="col-sm-1"></div>
+        </div> -->
+
+      <div class="row" id="Intro">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Introduction</h3>
+          <p>
+            In this project I performed image rectification using homography and
+            created panoramas from sets of multiple images.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="P1">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-11">
+          <h3>Part A</h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>Images</h5>
+          <p>Below are the images I used for this project</p>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="images/img1.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="images/img2.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h5>Recovering Homographies</h5>
+            <p>
+              I marked key correspondance points between relevant features in
+              the pair of images. Here are the matching correspondance points in
+              the images.
+            </p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-8">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                  <img
+                    src="combined_correspondance.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+            <p>
+              To estimate the homography matrix \( H \) between two images, we
+              start with the relationship between corresponding points in
+              homogeneous coordinates: \(q\)=\(Hp\) where \(q\) and \(p\) are
+              points in the first and second images, respectively, represented
+              in homogeneous coordinates. The calculation for the homography
+              matrix using this theory is shown below.
+            </p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-8">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                  ></p>
+                  <img
+                    src="equation.jpeg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+            <p>
+              For this to be underdetermined, we require at least 4
+              correspondence points between the two images. If there are more,
+              we can use least squares to find a good approximate solution.
+            </p>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h5>Rectification</h5>
+              <p>
+                To rectify images, I marked keypoints on the corners of the
+                surface. I then used the homography matrix and inverse warping
+                to warp the desired surface onto a flat plane that I defined in
+                a second image. Something I noticed was that these results were very sensitive to errors in point selection since they were manually selected. 
+              </p>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="images/img3.jpg"
+                      class="img-fluid"
+                      style="width: 100%"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="image_rectification.jpg"
+                      class="img-fluid"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                  <h5>Warping Images</h5>
+                  <p>
+                    With a homography matrix, we can reproject points in one image onto another and stitch them together. To do so we would also need to compute the bounding box of the final image by taking the four corners of the given image and applying the homography to project it onto the second image (in this case we are warping image1 to image2). This gives us the polygon in which the final image wil be placed. Then we interpolate the pixels in both images for each pixel in the final image using <code>scipy.interpolate.griddata</code>.
+                  </p>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <p
+                          class="text-center"
+                          style="margin-top: 10px; font-size: 1rem"
+                        ></p>
+                        <img
+                          src="merged_unsmooth.jpg"
+                          class="img-fluid"
+                          style="width: 100%"
+                        />
+                      </div>
+                    
+                  </div>
+                </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h5>Blending Images</h5>
+              <p>
+                To better blend the images, I used an alpha channel to determine where the images lied on each other. The distance transform sets each pixel inside a reigion to be the distance to the nearest edge. I used this to create the alpha channel, here is a visualization of the distance transform of the two images.
+              </p>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="distance_trans_1.jpg"
+                      class="img-fluid"
+                      style="width: 50%"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="distance_trans_2.jpg"
+                      class="img-fluid"
+                      style="width: 50%"
+                    />
+                  </div>
+              </div>
+            </div>
+            <p>
+                These distance transforms are used as weights for two band blending where I compute a loss pass and high pass filter of the image and blend them seperately. This is the result:
+            </p>
+            <div class="container">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="2_blend.png"
+                      class="img-fluid"
+                      style="width: 100%"
+                    />
+                  </div>
+        </div>
+        <p>
+            I tried it on another example:
+        </p>
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-5">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="images/1.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-5">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="images/2.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-10">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                ></p>
+                <img
+                  src="res2.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+          </div>
+        </div>
+       
+      </div>
+      
