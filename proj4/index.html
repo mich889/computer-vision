@@ -100,7 +100,7 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
           <h5>Images</h5>
-          <p>Below are the images I used for this project</p>
+          <p>Below are the images I used for part A of this project.</p>
           <div class="container">
             <div class="row">
               <div class="col-sm-6">
@@ -190,7 +190,9 @@
                 To rectify images, I marked keypoints on the corners of the
                 surface. I then used the homography matrix and inverse warping
                 to warp the desired surface onto a flat plane that I defined in
-                a second image. Something I noticed was that these results were very sensitive to errors in point selection since they were manually selected. 
+                a second image. Something I noticed was that these results were
+                very sensitive to errors in point selection since they were
+                manually selected.
               </p>
               <div class="container">
                 <div class="row">
@@ -245,32 +247,38 @@
                 </div>
               </div>
             </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
-                  <h5>Warping Images</h5>
-                  <p>
-                    With a homography matrix, we can reproject points in one image onto another and stitch them together. To do so we would also need to compute the bounding box of the final image by taking the four corners of the given image and applying the homography to project it onto the second image (in this case we are warping image1 to image2). This gives us the polygon in which the final image wil be placed. Then we interpolate the pixels in both images for each pixel in the final image using <code>scipy.interpolate.griddata</code>.
-                  </p>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <p
-                          class="text-center"
-                          style="margin-top: 10px; font-size: 1rem"
-                        ></p>
-                        <img
-                          src="merged_unsmooth.jpg"
-                          class="img-fluid"
-                          style="width: 100%"
-                        />
-                      </div>
-                    
+          </div>
+
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h5>Warping Images</h5>
+              <p>
+                With a homography matrix, we can reproject points in one image
+                onto another and stitch them together. To do so we would also
+                need to compute the bounding box of the final image by taking
+                the four corners of the given image and applying the homography
+                to project it onto the second image (in this case we are warping
+                image1 to image2). This gives us the polygon in which the final
+                image wil be placed. Then we interpolate the pixels in both
+                images for each pixel in the final image using
+                <code>scipy.interpolate.griddata</code>.
+              </p>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                    ></p>
+                    <img
+                      src="merged_unsmooth.jpg"
+                      class="img-fluid"
+                      style="width: 100%"
+                    />
                   </div>
                 </div>
-                
+              </div>
             </div>
           </div>
           <div class="row">
@@ -278,7 +286,11 @@
             <div class="col-sm-10">
               <h5>Blending Images</h5>
               <p>
-                To better blend the images, I used an alpha channel to determine where the images lied on each other. The distance transform sets each pixel inside a reigion to be the distance to the nearest edge. I used this to create the alpha channel, here is a visualization of the distance transform of the two images.
+                To better blend the images, I used an alpha channel to determine
+                where the images lied on each other. The distance transform sets
+                each pixel inside a reigion to be the distance to the nearest
+                edge. I used this to create the alpha channel, here is a
+                visualization of the distance transform of the two images.
               </p>
               <div class="container">
                 <div class="row">
@@ -304,12 +316,14 @@
                       style="width: 50%"
                     />
                   </div>
+                </div>
               </div>
-            </div>
-            <p>
-                These distance transforms are used as weights for two band blending where I compute a loss pass and high pass filter of the image and blend them seperately. This is the result:
-            </p>
-            <div class="container">
+              <p>
+                These distance transforms are used as weights for two band
+                blending where I compute a loss pass and high pass filter of the
+                image and blend them seperately. This is the result:
+              </p>
+              <div class="container">
                 <div class="row">
                   <div class="col-sm-6">
                     <p
@@ -322,84 +336,412 @@
                       style="width: 100%"
                     />
                   </div>
-        </div>
-        <p>
-            I tried it on a couple other examples:
-        </p>
-        <div class="container">
-            <div class="row">
-              <div class="col-sm-5">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; font-size: 1rem"
-                ></p>
-                <img
-                  src="images/1.jpg"
-                  class="img-fluid"
-                  style="width: 100%"
-                />
+                </div>
+                <p>I tried it on a couple other examples:</p>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="images/1.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-5">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="images/2.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-10">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="res2.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="images/c.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-5">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="images/d.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-10">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      ></p>
+                      <img
+                        src="output3.png"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-sm-5">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; font-size: 1rem"
-                ></p>
-                <img
-                  src="images/2.jpg"
-                  class="img-fluid"
-                  style="width: 100%"
-                />
-              </div>
-              <div class="col-sm-10">
-                <p
-                  class="text-center"
-                  style="margin-top: 10px; font-size: 1rem"
-                ></p>
-                <img
-                  src="res2.jpg"
-                  class="img-fluid"
-                  style="width: 100%"
-                />
-              </div>
+            </div>
           </div>
         </div>
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-5">
-              <p
-                class="text-center"
-                style="margin-top: 10px; font-size: 1rem"
-              ></p>
-              <img
-                src="images/c.jpg"
-                class="img-fluid"
-                style="width: 100%"
-              />
-            </div>
-            <div class="col-sm-5">
-              <p
-                class="text-center"
-                style="margin-top: 10px; font-size: 1rem"
-              ></p>
-              <img
-                src="images/d.jpg"
-                class="img-fluid"
-                style="width: 100%"
-              />
-            </div>
-            <div class="col-sm-10">
-              <p
-                class="text-center"
-                style="margin-top: 10px; font-size: 1rem"
-              ></p>
-              <img
-                src="output3.png"
-                class="img-fluid"
-                style="width: 100%"
-              />
-            </div>
+      </div>
+      <div class="row" id="P2">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-11">
+          <h3>Part B</h3>
         </div>
       </div>
-     
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>Introduction</h5>
+          <p>
+            In this part of the project, I am making an automatic feature
+            matching and stitching for the mosaic.
+          </p>
+        </div>
       </div>
-      
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>Corner Detection</h5>
+          <p>
+            In order to find the interest points in the image, I want to find
+            the corners of the image. I initially try to do this was a Harris
+            interest point detector and use peaks in the matrix as the corner
+            points. This is the result:
+          </p>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                  Harris
+                  Corners
+                ></p>
+                <img
+                  src="partb/harris_corners_3.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="col-sm-6">
+                <p
+                  class="text-center"
+                  style="margin-top: 10px; font-size: 1rem"
+                  Harris
+                  Matrix
+                ></p>
+                <img
+                  src="partb/harris_matrix_3.jpg"
+                  class="img-fluid"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h5>Adaptive Non-Maximal Suppression</h5>
+            <p>
+              The output of the Harris interest points are good, but they're
+              very clustered together with alot of redundant information.
+              Adaptive non maxmal suppression (ANMS) is an algorithm to find a
+              more even distribution of points across the image. I implemented
+              this using k-d trees to find the set of neighboring points within
+              a radius and suppressing weaker points within that radius. This
+              implementation follows "Efficient adaptive non-maximal suppression
+              algorithms for homogeneous spatial keypoint distribution" by Bailo
+              et al. The result is as follows:
+            </p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-8">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                    Harris
+                    Corners
+                  ></p>
+                  <img
+                    src="partb/anms_3.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h5>Feature Descriptor Extraction</h5>
+            <p>
+              From each interest point we want to extract the corresponding
+              features. To avoid aliasing, we blur the image before with a
+              gaussian blur filter. We sample from a patch of radius 20 of size
+              40x40 with spacing s=5 (8x8). After sampling the features are
+              flattened and normalized. Here is a sample of 5 of the features:
+            </p>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-11">
+                  <p
+                    class="text-center"
+                    style="margin-top: 10px; font-size: 1rem"
+                    Harris
+                    Corners
+                  ></p>
+                  <img
+                    src="partb/patches_3.jpg"
+                    class="img-fluid"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h5>Feature Matching</h5>
+              <p>
+                After extracting features from both images, we want to find the
+                corresponding features across both components and match them to
+                create correspondances. The ratio of error for the first nearest
+                neighbor and second nearest neighbor is computed and used
+                against a threshold value, as defined by Lowe's trick, which
+                helps better identify matches. This is because the cloest
+                neighbor should be much better than the second closest if it is
+                a real match.
+              </p>
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-11">
+                    <p
+                      class="text-center"
+                      style="margin-top: 10px; font-size: 1rem"
+                      Harris
+                      Corners
+                    ></p>
+                    <img
+                      src="partb/matching_features_3.jpg"
+                      class="img-fluid"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-10">
+                <h5>RANSAC</h5>
+                <p>
+                  Although the number of outliers was reduced, there are still
+                  alot of incorrect pairings as the least squares is not robust
+                  to outliers. To solve this, we use RANSAC: by sampling 4
+                  random pairs of points and computing the homography through
+                  these points, keeping track of inliers as we go we can produce
+                  a homography taht produces the most inliers which ignores the
+                  correspondence points taht do not follow the majority
+                  transformation. As a result, the correspondances that are
+                  generated are more accurate.
+                </p>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-11">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      ></p>
+                      <img
+                        src="partb/ransac_features_3.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-10">
+                <h5>Results</h5>
+                <p>
+                  I also tried creating mosaics for the following pairs of
+                  images
+                </p>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Campinile 1
+                      </p>
+                      <img
+                        src="images/camp1.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Campinile 2
+                      </p>
+                      <img
+                        src="images/camp2.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Fridge 1
+                      </p>
+                      <img
+                        src="images/fridge_1.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Fridge 2
+                      </p>
+                      <img
+                        src="images/fridge_2.jpg"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <p>These were the final results</p>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                      >
+                        Image board (mosaic1)
+                      </p>
+                      <img
+                        src="pic_merged.png"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Campinile (mosaic2)
+                      </p>
+                      <img
+                        src="partb/campinile_merge.png"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                    <div class="col-sm-4">
+                      <p
+                        class="text-center"
+                        style="margin-top: 10px; font-size: 1rem"
+                        Harris
+                        Corners
+                      >
+                        Fridge (mosaic3)
+                      </p>
+                      <img
+                        src="partb/combined_fridge.png"
+                        class="img-fluid"
+                        style="width: 100%"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p>
+              The coolest thing I learnt about this project was how features are
+              defined in images through corners and how they can be matched to
+              create a mosaic. I also learnt about the importance of RANSAC in
+              removing outliers and how it can be used to create a more accurate
+              homography. It was interesting to see how different images
+              resulted in different qualities of features produced!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
