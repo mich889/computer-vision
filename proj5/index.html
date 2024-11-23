@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Fun with Diffusion Models!</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      div {
+        padding-bottom: 8px;
+      }
+      .caption {
+        text-align: center;
+        font-style: italic;
+        color: grey;
+      }
+      h3 {
+        font-style: italic;
+        color: palevioletred;
+      }
+      h5 {
+        font-style: italic;
+        color: cadetblue;
+      }
+      h6 {
+        font-style: italic;
+      }
+      .custom-img-size {
+        width: 100%; /* Scale image to fill container */
+        max-width: 600px; /* Optional: Limit maximum width */
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Fun with Diffusion Models!</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#PartA">Part A</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#PartB">Part B</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#BW">B&W</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1"></div>
+        </div> -->
+      <!-- <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <p></p>
+                <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+            </div>
+            <div class="col-sm-1"></div>
+        </div> -->
+
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <h3 class="text-center"></h3>
+        <img
+          src="header.png"
+          style="width: 100%; height: 200px; object-fit: cover"
+        />
+        <p class="text-center"></p>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="Intro">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Introduction 🚀</h3>
+          <p></p>
+          <p>
+            In this project, I focused on implementing and deploying diffusion
+            models for image generation.
+            <br /><br />
+            <strong>Part A</strong>: Explored diffusion models with sampling
+            loops and applying them to tasks such as inpainting and generating
+            optical illusions.
+            <br />
+            <strong>Part B</strong>: Developed and trained my own UNet-based
+            diffusion models, including unconditional, time-conditioned, and
+            class-conditioned variants, using the MNIST dataset.
+          </p>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row" id="PartA">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Part A 🌸</h3>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>0. Setup and Sampling from the Model</h5>
+          <p>
+            Throughout this part and the subsequent parts, the random seed that
+            I used is 0. Additionally we are using the DeepFloyd IF diffusion
+            model which is a two stage model trained by stability AI. The first
+            stage produces images of size 64x64 and the second takes the output
+            of the first to generate a larger image of 256x256.
+          </p>
+
+          <p>
+            Here are the stage 1 outputs for
+            <code>num_inference_steps=20</code>.
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_0_an oil painting of a.png"
+                class="img-fluid"
+                alt="Stage 1: Oil Painting"
+              />
+              <p class="caption">An oil painting of a scene</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_1_a man wearing a hat.png"
+                class="img-fluid"
+                alt="Stage 1: Man Wearing a Hat"
+              />
+              <p class="caption">A man wearing a hat</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_2_a rocket ship.png"
+                class="img-fluid"
+                alt="Stage 1: Rocket Ship"
+              />
+              <p class="caption">A rocket ship</p>
+            </div>
+          </div>
+          <p>and for <code>num_inference_steps=100</code>.</p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_0_an oil painting of a_100.png"
+                class="img-fluid"
+                alt="Stage 1: Oil Painting"
+              />
+              <p class="caption">An oil painting of a scene</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_1_a man wearing a hat_100.png"
+                class="img-fluid"
+                alt="Stage 1: Man Wearing a Hat"
+              />
+              <p class="caption">A man wearing a hat</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage1_2_a rocket ship_100.png"
+                class="img-fluid"
+                alt="Stage 1: Rocket Ship"
+              />
+              <p class="caption">A rocket ship</p>
+            </div>
+          </div>
+
+          <p>Here are the stage 2 outputs:</p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_0_an oil painting of a.png"
+                class="img-fluid"
+                alt="Stage 2: Oil Painting"
+              />
+              <p class="caption">An oil painting of a scene</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_1_a man wearing a hat.png"
+                class="img-fluid"
+                alt="Stage 2: Man Wearing a Hat"
+              />
+              <p class="caption">A man wearing a hat</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_2_a rocket ship.png"
+                class="img-fluid"
+                alt="Stage 2: Rocket Ship"
+              />
+              <p class="caption">A rocket ship</p>
+            </div>
+          </div>
+
+          <p>and for <code>num_inference_steps=100</code>.</p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_0_an oil painting of a_100.png"
+                class="img-fluid"
+                alt="Stage 1: Oil Painting"
+              />
+              <p class="caption">An oil painting of a scene</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_1_a man wearing a hat_100.png"
+                class="img-fluid"
+                alt="Stage 1: Man Wearing a Hat"
+              />
+              <p class="caption">A man wearing a hat</p>
+            </div>
+            <div class="col-sm-4 text-center">
+              <img
+                src="part0/stage2_2_a rocket ship_100.png"
+                class="img-fluid"
+                alt="Stage 1: Rocket Ship"
+              />
+              <p class="caption">A rocket ship</p>
+            </div>
+          </div>
+          <p>
+            At <code>num_inference_steps=20</code>, the images are less
+            realistic. The rocket ship has the best results showing a standard
+            rocket ship in the sky. While the other two results also correspond
+            with the image, the oil painting strokes aren't very prevelant and
+            look the same style as a non oil painting image and the man wearing
+            a hat has its eyes looking at each other which makes the image look
+            a little less realistic.
+          </p>
+          <p>
+            At <code>num_inference_steps=100</code>, the quality of the images
+            improve and correspond closer with the text. The oil painting
+            strokes are more realistic and the previous issue with unrealistic
+            eyes in the man wearing the hat is resolved.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.1. Implementing the Forward Process</h5>
+          <p>
+            I obtained <code> epsilon </code> using
+            <code>torch.randn_like</code> and indexed into
+            <code>alpha_cumprod</code> for timestep t. to implement the forward
+            function defined with the following equation:
+          </p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="equation1.png"
+              class="img-fluid"
+              alt="Stage 1: Rocket Ship"
+            />
+          </div>
+          <p>
+            This obtained the following outputs for different denoising levels
+          </p>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/1.1/original_image.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+              <p class="caption">Original Image</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 250 -->
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/1.1/noisy_image_t250.png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 250"
+              />
+              <p class="caption">Timestep 250</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 500 -->
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/1.1/noisy_image_t500.png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 500"
+              />
+              <p class="caption">Timestep 500</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 750 -->
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/1.1/noisy_image_t750.png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 750"
+              />
+              <p class="caption">Timestep 750</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.2. Classical Denoising</h5>
+          <p>
+            I applied Gaussian blur filtering with
+            <code>kernel_size=7</code> and <code>sigma=7</code> using
+            <code>torchvision.transforms.functional.gaussian_blur</code>
+            as an attempt to denoise the images. Here are the noisy images and
+            their Gaussian-denoised verison shown together for comparison for
+            the respective timesteps of <code>250</code>, <code>500</code> and
+            <code>750</code>.
+          </p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="pt1/comparison_grid.png"
+              class="img-fluid custom-img-size"
+              alt="Stage 1: Rocket Ship"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.3. One-Step Denoising</h5>
+          <p>
+            To denoise using UNet, I first recreated the noisy images at various
+            timesteps based on the algorithm from 1.1. Then I use the UNet to
+            estimate the noise added between timestep 0 and t, extract it and
+            subtract it in one go. The results are as follows
+          </p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="pt1/denoising_results_combined.png"
+              class="img-fluid custom-img-size"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.4. Iterative Denoising</h5>
+          <p>
+            Instead of denoising it all in one step, we can try getting better
+            results by denoising iteratively. Starting at T=990, we take strides
+            of 30 towards 0 to make the process shorter and cheaper by skipping
+            some steps. The equation we use to calculate the output a time t is
+          </p>
+          <div class="col-sm-12 text-center">
+            <img src="pt1/equation2.png" />
+          </div>
+          <p>The results are as follows:</p>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/denoise/denoising_step_90.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+            </div>
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/denoise/denoising_step_240.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+            </div>
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/denoise/denoising_step_390.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+            </div>
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/denoise/denoising_step_540.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+            </div>
+            <div class="col-sm-3 text-center">
+              <img
+                src="pt1/denoise/denoising_step_690.png"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+            </div>
+          </div>
+          <p>
+            Here is a summary of all the denoising strategies we've tried so
+            far. From left to right we have one step denoising, gaussian blur
+            and iterative denoising:
+          </p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="pt1/denoising_combined.png"
+              class="img-fluid custom-img-size"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.5. Diffusion Model Sampling</h5>
+          <p>
+            Using the function from 1.4. I generated 5 sample images with
+            <code>i_start=0</code> and pure noise as the input wiht the prompt
+            "a high quality photo" to see what it would output
+          </p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="pt1/combined_samples.png"
+              class="img-fluid custom-img-size"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.6. Classifier-Free Guidance (CFG)</h5>
+          <p>
+            To improve the quality of the images we can use Classifier Free
+            Guidance to compute a conditional noise estimate, and an
+            unconditional one. The overall noise is then estimated to be:
+          </p>
+          <div class="col-sm-12 text-center">
+            <img src="pt1/equation3.png" />
+          </div>
+          <p>
+            With the scale set to 7 and "a high quality photo" set as the
+            conditional prompt and "" as the unconditional prompt, I generated
+            the following 5 samples:
+          </p>
+          <div class="col-sm-12 text-center">
+            <img src="pt1/cfg_samples.png" class="img-fluid custom-img-size" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.7. Image-to-image translation</h5>
+          <p>
+            Using iterative denoise with CFG we can generate an image to become
+            closer to our source image. This can be done by adding timesteps
+            with noise, passing back into CFG denoise to get an output closer to
+            the original image. I used the indicies at noise levels [1, 3, 5, 7,
+            10, 20] with text prompt "a high quality photo"
+          </p>
+          <p>This was the result for the test Campinile image:</p>
+          <div class="col-sm-12 text-center">
+            <img
+              src="pt1/img2img/img2img.png"
+              style="width: 70%; height: auto"
+            />
+          </div>
+          <p>
+            I then tried the same process with two other images: one of a statue
+            and one of sushi
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-6 text-center">
+              <img
+                src="pt1/images/stone.jpg"
+                style="width: 70%; height: auto"
+              />
+            </div>
+            <div class="col-sm-6 text-center">
+              <img
+                src="pt1/images/sushi.jpg"
+                style="width: 70%; height: auto"
+              />
+            </div>
+          </div>
+          <p>
+            Which lead to the following results with indicies 1,3,5 on the right
+            and 7,10,20 on the left:
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-6 text-center">
+              <img
+                src="pt1/img2img/img2img2.png"
+                style="width: 100%; height: auto"
+              />
+            </div>
+            <div class="col-sm-6 text-center">
+              <img
+                src="pt1/img2img/img2img3.png"
+                style="width: 100%; height: auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.7.1 Editing Hand-Drawn and Web Images</h5>
+          <p>
+            The image-to-image translation also works when we have a
+            non-realistic image that we want to convert into a realistic one. We
+            demonstrate this using a hand-drawn image and searched images from
+            the internet.
+          </p>
+          <div class="d-flex justify-content-center">
+            <!-- Noise Level 1 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_1.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 1"
+              />
+              <p class="caption">Noise Level: 1</p>
+            </div>
+            <!-- Noise Level 3 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_3.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 3"
+              />
+              <p class="caption">Noise Level: 3</p>
+            </div>
+            <!-- Noise Level 5 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_5.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 5"
+              />
+              <p class="caption">Noise Level: 5</p>
+            </div>
+            <!-- Noise Level 7 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_7.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 7"
+              />
+              <p class="caption">Noise Level: 7</p>
+            </div>
+            <!-- Noise Level 10 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_10.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 10"
+              />
+              <p class="caption">Noise Level: 10</p>
+            </div>
+            <!-- Noise Level 20 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_1_20.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 20"
+              />
+              <p class="caption">Noise Level: 20</p>
+            </div>
+            <!-- Original -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/images/drawing.png"
+                class="img-fluid"
+                style="
+                  width: 100%;
+                  max-width: 130px;
+                  height: 130px;
+                  object-fit: cover;
+                  margin: 0;
+                "
+                alt="Original"
+              />
+              <p class="caption">Original</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <!-- Noise Level 1 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_1.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 1"
+              />
+              <p class="caption">Noise Level: 1</p>
+            </div>
+            <!-- Noise Level 3 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_3.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 3"
+              />
+              <p class="caption">Noise Level: 3</p>
+            </div>
+            <!-- Noise Level 5 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_5.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 5"
+              />
+              <p class="caption">Noise Level: 5</p>
+            </div>
+            <!-- Noise Level 7 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_7.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 7"
+              />
+              <p class="caption">Noise Level: 7</p>
+            </div>
+            <!-- Noise Level 10 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_10.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 10"
+              />
+              <p class="caption">Noise Level: 10</p>
+            </div>
+            <!-- Noise Level 20 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/drawn_2_20.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 20"
+              />
+              <p class="caption">Noise Level: 20</p>
+            </div>
+            <!-- Original -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/images/drawing_2.png"
+                class="img-fluid"
+                style="
+                  width: 100%;
+                  max-width: 130px;
+                  height: 130px;
+                  object-fit: cover;
+                  margin: 0;
+                "
+                alt="Original"
+              />
+              <p class="caption">Original</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <!-- Noise Level 1 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_1.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 1"
+              />
+              <p class="caption">Noise Level: 1</p>
+            </div>
+            <!-- Noise Level 3 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_3.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 3"
+              />
+              <p class="caption">Noise Level: 3</p>
+            </div>
+            <!-- Noise Level 5 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_5.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 5"
+              />
+              <p class="caption">Noise Level: 5</p>
+            </div>
+            <!-- Noise Level 7 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_7.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 7"
+              />
+              <p class="caption">Noise Level: 7</p>
+            </div>
+            <!-- Noise Level 10 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_10.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 10"
+              />
+              <p class="caption">Noise Level: 10</p>
+            </div>
+            <!-- Noise Level 20 -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/image_start_20.png"
+                class="img-fluid"
+                style="width: 100%; max-width: 150px; margin: 0"
+                alt="Noise Level 20"
+              />
+              <p class="caption">Noise Level: 20</p>
+            </div>
+            <!-- Original -->
+            <div style="flex: 1; text-align: center">
+              <img
+                src="pt1/1.71/downloaded_image.jpg"
+                class="img-fluid"
+                style="
+                  width: 100%;
+                  max-width: 130px;
+                  height: 130px;
+                  object-fit: cover;
+                  margin: 0;
+                "
+                alt="Original"
+              />
+              <p class="caption">Original</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h5>1.7.2. Inpainting</h5>
+          <p>
+            Using iterative denoising with CFG to inpaint. I define a mask and
+            fill it with a generated image. Here are the results:
+          </p>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/image.jpg"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+              <p class="caption">Original Image</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 250 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/mask.jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 250"
+              />
+              <p class="caption">Mask</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 500 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/to_replace.jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 500"
+              />
+              <p class="caption">To Inpaint</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 750 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/inpainted.png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 750"
+              />
+              <p class="caption">Result</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/image_northern.jpg"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+              <p class="caption">Original Image</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 250 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/mask_northern.jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 250"
+              />
+              <p class="caption">Mask</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 500 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/to_replace_northern.jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 500"
+              />
+              <p class="caption">To Inpaint</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 750 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/inpainted_2 (1).png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 750"
+              />
+              <p class="caption">Result</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/image (1).jpg"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+              <p class="caption">Original Image</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 250 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/mask (1).jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 250"
+              />
+              <p class="caption">Mask</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 500 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/to_replace (1).jpg"
+                class="img-fluid custom-img-size"
+                alt="Timestep 500"
+              />
+              <p class="caption">To Inpaint</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 750 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt1/inpainted/inpainted_3.png"
+                class="img-fluid custom-img-size"
+                alt="Timestep 750"
+              />
+              <p class="caption">Result</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h5>1.7.3. Text-Conditional Image-to-image Translation</h5>
+            <p>
+              We've been conditioning on the text prompt "a high quality photo",
+              but we can also try conditioning on other text prompts through
+              text-conditional image-to-image transolation. As t decreases, it
+              gets more similar to the prompt and further from the original.
+            </p>
+            <p>
+              <b>Image: Campanile & Prompt: A Rocket Ship</b>
+            </p>
+            <div class="d-flex justify-content-center">
+              <!-- Noise Level 1 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_1.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 1"
+                />
+                <p class="caption">Noise Level: 1</p>
+              </div>
+              <!-- Noise Level 3 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_3.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 3"
+                />
+                <p class="caption">Noise Level: 3</p>
+              </div>
+              <!-- Noise Level 5 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_5.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 5"
+                />
+                <p class="caption">Noise Level: 5</p>
+              </div>
+              <!-- Noise Level 7 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_7.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 7"
+                />
+                <p class="caption">Noise Level: 7</p>
+              </div>
+              <!-- Noise Level 10 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_10.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 10"
+                />
+                <p class="caption">Noise Level: 10</p>
+              </div>
+              <!-- Noise Level 20 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_20.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 20"
+                />
+                <p class="caption">Noise Level: 20</p>
+              </div>
+              <!-- Original -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="campanile.jpg"
+                  class="img-fluid"
+                  style="
+                    width: 100%;
+                    max-width: 130px;
+                    height: 130px;
+                    object-fit: cover;
+                    margin: 0;
+                  "
+                  alt="Original"
+                />
+                <p class="caption">Original</p>
+              </div>
+            </div>
+            <p>
+              <b>Image: Chicken & Prompt: Dog</b>
+            </p>
+            <div class="d-flex justify-content-center">
+              <!-- Noise Level 1 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_1.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 1"
+                />
+                <p class="caption">Noise Level: 1</p>
+              </div>
+              <!-- Noise Level 3 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_3.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 3"
+                />
+                <p class="caption">Noise Level: 3</p>
+              </div>
+              <!-- Noise Level 5 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_5.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 5"
+                />
+                <p class="caption">Noise Level: 5</p>
+              </div>
+              <!-- Noise Level 7 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_7.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 7"
+                />
+                <p class="caption">Noise Level: 7</p>
+              </div>
+              <!-- Noise Level 10 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_10.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 10"
+                />
+                <p class="caption">Noise Level: 10</p>
+              </div>
+              <!-- Noise Level 20 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_chicken_20.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 20"
+                />
+                <p class="caption">Noise Level: 20</p>
+              </div>
+              <!-- Original -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/chicken.jpg"
+                  class="img-fluid"
+                  style="
+                    width: 100%;
+                    max-width: 130px;
+                    height: 130px;
+                    object-fit: cover;
+                    margin: 0;
+                  "
+                  alt="Original"
+                />
+                <p class="caption">Original</p>
+              </div>
+            </div>
+            <p>
+              <b>Image: Head & Prompt: Skull</b>
+            </p>
+            <div class="d-flex justify-content-center">
+              <!-- Noise Level 1 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_1.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 1"
+                />
+                <p class="caption">Noise Level: 1</p>
+              </div>
+              <!-- Noise Level 3 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_3.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 3"
+                />
+                <p class="caption">Noise Level: 3</p>
+              </div>
+              <!-- Noise Level 5 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_5.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 5"
+                />
+                <p class="caption">Noise Level: 5</p>
+              </div>
+              <!-- Noise Level 7 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_7.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 7"
+                />
+                <p class="caption">Noise Level: 7</p>
+              </div>
+              <!-- Noise Level 10 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_10.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 10"
+                />
+                <p class="caption">Noise Level: 10</p>
+              </div>
+              <!-- Noise Level 20 -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/text/img_head_20.png"
+                  class="img-fluid"
+                  style="width: 100%; max-width: 150px; margin: 0"
+                  alt="Noise Level 20"
+                />
+                <p class="caption">Noise Level: 20</p>
+              </div>
+              <!-- Original -->
+              <div style="flex: 1; text-align: center">
+                <img
+                  src="pt1/head.jpg"
+                  class="img-fluid"
+                  style="
+                    width: 100%;
+                    max-width: 130px;
+                    height: 130px;
+                    object-fit: cover;
+                    margin: 0;
+                  "
+                  alt="Original"
+                />
+                <p class="caption">Original</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h5>1.8. Visual Anagrams</h5>
+            <p>
+              We can also use the text-conditional image-to-image translation to
+              generate visual anagrams. Visual anagrams are when we flip the
+              image by 180 degrees we can see the other prompt come out
+            </p>
+            <p>
+              <b
+                >"an oil painting of people around a campfire" and "an oil
+                painting of an old man"</b
+              >
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/normal_orientation.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Oil Painting"
+                />
+                <p class="caption">an oil painting of an old man</p>
+              </div>
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/flipped_orientation.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Man Wearing a Hat"
+                />
+                <p class="caption">
+                  an oil painting of people around a campfire
+                </p>
+              </div>
+            </div>
+            <p>
+              <b
+                >'a photo of the amalfi cost' and "an oil painting of a snowy
+                mountain village"</b
+              >
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/normal_orientation_2.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Oil Painting"
+                />
+                <p class="caption">
+                  an oil painting of a snowy mountain village
+                </p>
+              </div>
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/flipped_orientation_2.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Man Wearing a Hat"
+                />
+                <p class="caption">a photo of the amalfi cost</p>
+              </div>
+            </div>
+            <p>
+              <b
+                >'an oil painting of an old man' and 'a photo of a hipster
+                barista'</b
+              >
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/normal_orientation_3.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Oil Painting"
+                />
+                <p class="caption">a photo of a hipster barista</p>
+              </div>
+              <div class="col-sm-3 text-center">
+                <img
+                  src="pt1/anagram/flipped_orientation_3.png"
+                  class="img-fluid custom-img-size"
+                  alt="Stage 1: Man Wearing a Hat"
+                />
+                <p class="caption">an oil painting of an old man</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+              <h5>1.9. Hybrid Images</h5>
+              <p>
+                Hybrid images display one image from far away and another when
+                closer. This is done using highpass and lowpass filters as
+                frequencies that change as we move closer/farther from an image.
+              </p>
+              <p>
+                <b>Rocket & Pencil</b>
+              </p>
+              <div class="d-flex justify-content-center">
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/rocket_pencil.png"
+                    alt="Stage 1: Oil Painting"
+                  />
+                </div>
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/rocket_pencil_upsample.png"
+                    class="img-fluid custom-img-size"
+                    alt="Stage 1: Man Wearing a Hat"
+                  />
+                </div>
+              </div>
+              <p>
+                <b>Dog & Man</b>
+              </p>
+              <div class="d-flex justify-content-center">
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/dog_man.png"
+                    alt="Stage 1: Oil Painting"
+                  />
+                </div>
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/dog_man_upsample.png"
+                    class="img-fluid custom-img-size"
+                    alt="Stage 1: Man Wearing a Hat"
+                  />
+                </div>
+              </div>
+              <p>
+                <b>Skull & Waterfalls</b>
+              </p>
+              <div class="d-flex justify-content-center">
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/skull_waterfalls_hybrid.png"
+                    alt="Stage 1: Oil Painting"
+                  />
+                </div>
+                <div class="col-sm-3 text-center">
+                  <img
+                    src="pt1/hybrid/skull_waterfalls_upsample.png"
+                    class="img-fluid custom-img-size"
+                    alt="Stage 1: Man Wearing a Hat"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="PartB">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <h3>Part B 🍀</h3>
+            <p>
+              In this section, we train our own diffusion model to produce
+              images based on the MNIST dataset.
+            </p>
+            <h5>Part 1: Training a Single-Step Denoising UNet</h5>
+            <p>
+              We first start with implementing a simple one-step denoiser. Here
+              are the results of adding Gaussian noise to a clean image x
+              according to z=x+σϵ where ϵ N(0,I) for different values of σ:
+            </p>
+            <div class="col-sm-12 text-center">
+              <img
+                src="pt2/gaussian_noise_visualization.png"
+                class="img-fluid"
+                alt="Stage 1: Rocket Ship"
+              />
+            </div>
+            <p>
+              I then implemented trained the unconditional UNet on noisy images
+              generated with σ=0.5 on 5 epochs. This is the training loss for
+              the single step denoiser:
+            </p>
+            <div class="col-sm-12 text-center">
+              <img
+                src="pt2/training_loss (4).png"
+                class="img-fluid"
+                alt="Stage 1: Rocket Ship"
+              />
+            </div>
+            <p>And here are the results from the first and fifth epoch:</p>
+            <div class="row justify-content-center">
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/denoising_results_epoch_1.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 1"
+                />
+                <p class="caption">Denoising Results: Epoch 1</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/denoising_results_epoch_5.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 5</p>
+              </div>
+            </div>
+            <p>
+              We use different sigma values for our test set to see how well our
+              model can generalize. This is various sigma levels for denoising
+              7:
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-4 text-center">
+                <img
+                  src="pt2/denoising_comparison_noise_levels.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <h5>Part 2: Training a Diffusion Model</h5>
+            <p>
+              Now we will train a UNet that can iteratively denoise an image
+              with DDPM. This is done by solving for the new loss
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="loss.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <h6>Time Conditioned UNet</h6>
+            <p>
+              We inject a scalar t into our unconditional UNet model to
+              condition it to time inputs. We used the following equation to
+              train:
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/time-train.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <p>Which resulted in the following loss curve:</p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/diffusion_training_loss.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <p>
+              Then we tried sampling the UNet at various epochs using thie
+              following algorithm:
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/time-sample.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <p>
+              Which led to the following results for various epochs. As one can
+              see, it does an OK job at generating new samples but it still
+              doesn't look exactly like numerical digits.
+            </p>
+            <div class="row justify-content-center">
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/one.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 1"
+                />
+                <p class="caption">Denoising Results: Epoch 1</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/five.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 5</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/ten.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 10</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/fifteen.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 15</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/20.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 20</p>
+              </div>
+            </div>
+
+            <h6>Class Conditioned UNet</h6>
+            <p>
+              To give more control over what we generate, we can add
+              conditioning on the class of each digit. To allow the model to
+              generalize to without class condition, we also implement a dropout
+              rate of 0.1. This is the algorithm we
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/class_train.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <p>This led to the training loss graph of the following:</p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/class_training_loss.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            <p>
+              Then we tried sampling the UNet at various epochs using the
+              following algorithm:
+            </p>
+            <div class="d-flex justify-content-center">
+              <div class="col-sm-10 text-center">
+                <img
+                  src="pt2/class_sample.png"
+                  class="img-fluid"
+                  alt="Denoising Comparison Noise Levels"
+                />
+              </div>
+            </div>
+            As one can see, the results are alot better than the time
+            conditioned results, with clear results showing up at the 10/15th
+            epoch already! Here are the sampled results:
+            <div class="row justify-content-center">
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/class-1.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 1"
+                />
+                <p class="caption">Denoising Results: Epoch 1</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/class-5.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 5</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/class-10.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 10</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/class-15.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 15</p>
+              </div>
+              <div class="col-sm-5 text-center">
+                <img
+                  src="pt2/class-20.png"
+                  class="img-fluid"
+                  style="max-width: 100%"
+                  alt="Denoising Results Epoch 5"
+                />
+                <p class="caption">Denoising Results: Epoch 20</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="BW">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <h3>Bells and Whistles 🔔</h3>
+          <p>
+            I created sampling gifs for sampline of time conditioned unets at
+            epoch 1 to 20.
+          </p>
+          <div class="d-flex justify-content-center">
+            <!-- Original Image -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt2/denoising_process-ezgif.com-speed.gif"
+                class="img-fluid custom-img-size"
+                alt="Original Image"
+              />
+              <p class="caption">Epoch 1</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 250 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt2/denoising_process_10-ezgif.com-speed.gif"
+                class="img-fluid custom-img-size"
+                alt="Timestep 250"
+              />
+              <p class="caption">Epoch 10</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 500 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt2/denoising_process_15-ezgif.com-speed.gif"
+                class="img-fluid custom-img-size"
+                alt="Timestep 500"
+              />
+              <p class="caption">Epoch 15</p>
+            </div>
+
+            <!-- Noisy Image at Timestep 750 -->
+            <div class="col-sm-2 text-center">
+              <img
+                src="pt2/denoising_process_20-ezgif.com-speed.gif"
+                class="img-fluid custom-img-size"
+                alt="Timestep 750"
+              />
+              <p class="caption">Epoch 20</p>
+            </div>
+          </div>
+          <p>
+            I also created tried to create a course logo :P Maybe it can be used in the future...
+          </p>
+          <div class="d-flex justify-content-center">
+            <div class="col-sm-7 text-center">
+              <img
+                src="logo.png"
+                class="img-fluid"
+                alt="Denoising Comparison Noise Levels"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
